@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 using System.Text;
 using System;
 
-namespace StockMerchant
+namespace SockMerchant
 {
     class Program
     {
