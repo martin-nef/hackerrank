@@ -1,5 +1,2 @@
-print(20.75)
-print(20.75 * (10/100))
-print(20.75 * (3/100))
-print(20.75 + 20.75 * (10/100) + 20.75 * (3/100))
-print(round(20.75 + 20.75 * (10/100) + 20.75 * (3/100)))
+def solution(meal_total, tip, tax):
+	return round(meal_total + meal_total * (tip/100) + meal_total * (tax/100))
