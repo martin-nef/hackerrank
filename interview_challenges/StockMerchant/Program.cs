@@ -48,7 +48,8 @@ namespace StockMerchant
     
     public static class TestHelper
     {
-        static TestHelper(){
+        static TestHelper()
+        {
             // Test();
         }
 
