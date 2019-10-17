@@ -17,12 +17,40 @@ namespace JumpingOnTheClouds {
 
         // Complete the jumpingOnClouds function below.
         static int jumpingOnClouds (int[] c) {
-            throw new NotImplementedException();
+            var jumps = 0;
+            // O(n), since at worst, we're going through clouds once, one by one
+            for (var cloud = 0; cloud < c.Length; cloud++) {
+                // Handle the scenario at the end
+                var isOnLastCloud = cloud + 1 == c.Length;
+                var isOneMoreJump = cloud + 2 == c.Length;
+                if (isOnLastCloud) {
+                    return jumps;
+                } else if (isOneMoreJump) {
+                    Console.WriteLine ($"jumping from {cloud} to {cloud + 1}");
+                    return jumps + 1;
+                }
+
+                // Try to jump over one cloud if it's safe
+                var isLongJumpSafe = c[cloud + 2] == 0;
+                if (isLongJumpSafe)
+                    cloud++;
+
+                // The default action is to jump to the next cloud
+                jumps++;
+            }
+                
+            return jumps;
         }
 
-        static void Main (string[] args) {
-            var input = new [] { 0, 0, 0, 0, 1, 0 };
-            Console.WriteLine (jumpingOnClouds (input));
+            static void Main (string[] args) {
+                foreach (var input in new [] {
+                        new Tuple<int[], int> (new [] { 0, 0, 1, 0, 0, 1, 0 }, 4),
+                            new Tuple<int[], int> (new [] { 0, 0, 0, 0, 1, 0 }, 3)
+                    }) {
+                    Console.WriteLine ("res: " + jumpingOnClouds (input.Item1));
+                    Console.WriteLine ("ans: " + input.Item2);
+                    Console.WriteLine ();
+                }
+            }
         }
     }
-}
