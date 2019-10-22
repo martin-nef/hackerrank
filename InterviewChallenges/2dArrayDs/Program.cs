@@ -55,7 +55,6 @@ namespace _2dArrayDs {
             return currentMaxSum.Value;
         }
 
-        [Fact]
         static void Main (string[] args) {
             var test1 = new int[][] {
                 new int[] { 1, 1, 1, 0, 0, 0, },
