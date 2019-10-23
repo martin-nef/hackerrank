@@ -20,7 +20,6 @@ namespace NewYearChaos {
         public static string minimumBribes (int[] q) {
             var output = default (string);
             var maximumBribe = 2;
-            var totalDistanceMoved = 0;
             var bribesMade = new Dictionary<int, int> (q.Length);
             var simulatedQ = Enumerable.Range (1, q.Length).ToArray ();
 
