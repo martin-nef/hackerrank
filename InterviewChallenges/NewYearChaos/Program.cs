@@ -21,27 +21,45 @@ namespace NewYearChaos {
             var output = default (string);
             var maximumBribe = 2;
             var totalDistanceMoved = 0;
+            var bribesMade = new Dictionary<int, int> (q.Length);
+            var simulatedQ = Enumerable.Range (1, q.Length).ToArray ();
 
-            // Calculate, how far each person has moved.
             for (int i = 0; i < q.Length; i++) {
                 var originalPosition = q[i];
-                var currentPosition = i + 1;
-
-                // Calculate how many bribes it would take to move froward from original to current
-                var distanceMoved = originalPosition - currentPosition;
-                // A person can accept as many bribes as they like, so distance can be negative, yet not too chaotic
-                #error Calculating bribes from distance does not account for case when bribe is made after accepting any
-                if (distanceMoved > maximumBribe) {
+                var endPosition = i + 1;
+                var currentPosition = simulatedQ[i];
+                // ? How do we use current properly?
+                var distanceMoved = originalPosition - endPosition;
+                if (distanceMoved <= 0) {
+                    continue;
+                } else if (distanceMoved > maximumBribe) {
                     output = "Too chaotic";
                     break;
                 }
-                if (distanceMoved > 0) {
-                    totalDistanceMoved += distanceMoved;
+
+                void move (int[] q, int from, int to) {
+                    var temp = q[to];
+                    q[to] = q[from];
+                    q[from] = temp;
+                }
+                void increment (IDictionary<int, int> dict, int key) {
+                    if (dict.ContainsKey (key))
+                        dict[key] = 1;
+                    else
+                        dict[key]++;
+                }
+                var steps = Enumerable.Range (endPosition, distanceMoved).Reverse ().ToArray ();
+                if (steps.Length < 2) {
+                    continue;
+                }
+                foreach (var s in steps) {
+                    // Simulate moves needed to move numbers the required distance, counting swaps
+                    /// * Simulate moves needed to move numbers the required distance, counting swaps
+                    increment(bribesMade, simulatedQ[s]);
+                    move (simulatedQ, s, s + 1);
                 }
             }
-            if (output == null) {
-                output = $"{totalDistanceMoved}";
-            }
+
             return output;
         }
 
