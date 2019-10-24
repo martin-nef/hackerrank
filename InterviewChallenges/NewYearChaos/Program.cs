@@ -17,17 +17,23 @@ using Xunit;
 
 namespace NewYearChaos {
     public static class Program {
+
+        ///
+        /// pass 1 - record distances
+        /// pass 2 - simulate moving forward, record those that moved back
+        /// pass 3 - find where the distance moved back doesn't equal end position
+        ///          calculate new distance for them (should be positive)
+        
         public static string minimumBribes (int[] q) {
             var output = default (string);
             var maximumBribe = 2;
             var bribesMade = new Dictionary<int, int> (q.Length);
             var simulatedQ = Enumerable.Range (1, q.Length).ToArray ();
 
-            for (int i = 0; i < q.Length; i++) {
-                var originalPosition = q[i];
-                var endPosition = i + 1;
-                var currentPosition = simulatedQ[i];
-                // ? How do we use current properly?
+            for (int i = q.Length - 1; i >= 0; i--) {
+                var endPosition = q[i];
+                var originalPosition = i + 1; // +1, because arrays in C# start from index 0 
+
                 var distanceMoved = originalPosition - endPosition;
                 if (distanceMoved <= 0) {
                     continue;
@@ -36,30 +42,33 @@ namespace NewYearChaos {
                     break;
                 }
 
-                void move (int[] q, int from, int to) {
-                    var temp = q[to];
-                    q[to] = q[from];
-                    q[from] = temp;
-                }
-                void increment (IDictionary<int, int> dict, int key) {
-                    if (dict.ContainsKey (key))
-                        dict[key] = 1;
-                    else
-                        dict[key]++;
-                }
-                var steps = Enumerable.Range (endPosition, distanceMoved).Reverse ().ToArray ();
-                if (steps.Length < 2) {
-                    continue;
-                }
-                foreach (var s in steps) {
-                    // Simulate moves needed to move numbers the required distance, counting swaps
-                    /// * Simulate moves needed to move numbers the required distance, counting swaps
-                    increment(bribesMade, simulatedQ[s]);
-                    move (simulatedQ, s, s + 1);
+                var moving = $"from {originalPosition} to {endPosition}";
+                // This is in O(1), since distance moved cannot exceed 2, otherwise the q is too chaotic
+                for (int currentPosition = originalPosition; currentPosition > endPosition; currentPosition--) {
+                    Assert.InRange (currentPosition, 0, q.Length);
+                    countBribes (bribesMade, personBribing : originalPosition);
+                    var swapping = $"from {currentPosition - 1} to {currentPosition - 2}";
+                    swap (inList: simulatedQ, from: currentPosition - 1, to: currentPosition - 2);
+                    Assert.Equal (simulatedQ[currentPosition - 2], originalPosition); // Ensure we're moving the same person
                 }
             }
 
+            output = $"{bribesMade.Values.Sum()}";
+            Console.WriteLine (output);
+            Assert.Equal (q, simulatedQ); // Ensure we have arrived at the given queue with our simulation
             return output;
+        }
+
+        static void swap (int[] inList, int from, int to) {
+            var temp = inList[to];
+            inList[to] = inList[from];
+            inList[from] = temp;
+        }
+        static void countBribes (IDictionary<int, int> dict, int personBribing) {
+            if (dict.ContainsKey (personBribing))
+                dict[personBribing]++;
+            else
+                dict[personBribing] = 1;
         }
 
         public class ProgramTest {
@@ -71,6 +80,7 @@ namespace NewYearChaos {
             [Fact]
             public void TestMinimumBribes () {
                 var test1 =
+                    "3 1 2 - 2\n" +
                     "2 5 1 3 4 - Too chaotic\n" +
                     "1 2 3 4 5 6 - 0\n" +
                     "2 1 5 3 4 - 3\n" +
