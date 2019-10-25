@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Scratchpad",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Scratchpad/bin/Debug/netcoreapp3.0/Scratchpad.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Scratchpad",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": "NewYearChaos",
             "type": "coreclr",
             "request": "launch",
